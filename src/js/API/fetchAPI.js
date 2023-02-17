@@ -11,9 +11,7 @@ class NewsAPI {
 
   #params = {
     'api-key': this.#API_KEY,
-    q: this.#query
-    // begin_date: this.#beginDate,
-    // end_date:this.#end_date,
+    q: this.#query,
   };
 
   pageLimit = 20;
@@ -32,7 +30,7 @@ class NewsAPI {
   async getPopularNews() {
     const response = await fetch(
       this.#BASE_URL +
-      `mostpopular/v2/viewed/${this.#period}.json?api-key=${this.#API_KEY}`
+        `mostpopular/v2/viewed/${this.#period}.json?api-key=${this.#API_KEY}`
     );
     if (!response.ok) {
       throw new Error(error);
@@ -44,8 +42,10 @@ class NewsAPI {
   async getNewsByQuery() {
     let newDate = null;
     //перевіряє чи календар вибраний
-    let params = { ... this.#params, ... { page: (this.currentPage - 1) } };
+    let params = { ...this.#params, ...{ page: this.currentPage - 1 } };
+    console.log('params', params);
     if (!selectedDate) {
+      console.log('selected date', selectedDate);
       newDate = format(Date.now(), 'yyyyMMdd');
     } else {
       newDate = selectedDate;
@@ -62,7 +62,7 @@ class NewsAPI {
     });
     const response = await fetch(
       `${this.#BASE_URL}search/v2/articlesearch.json?` +
-      new URLSearchParams(params)
+        new URLSearchParams(params)
     );
 
     if (!response.ok) {
@@ -75,26 +75,24 @@ class NewsAPI {
 
     if (meta.hits > 1000) {
       this.totalCount = 1000;
-    }
-    else {
+    } else {
       this.totalCount = meta.hits;
     }
     // console.log(meta) // {hits: 29412, offset: 10, time: 30}
     return { docs, meta };
   }
 
-
   async getNewsByCategories() {
-    console.log("this.getOffset", this.getOffset())
-    
-    console.log("isCategories",this.isCategories)
+    console.log('this.getOffset', this.getOffset());
+
+    console.log('isCategories', this.isCategories);
     const response = await fetch(
       `${this.#BASE_URL}news/v3/content/nyt/${this.category}.json?` +
-      new URLSearchParams({
-        'api-key': this.#API_KEY,
-        offset: this.getOffset(), // divisible by 20
-        // limit: 20,
-      })
+        new URLSearchParams({
+          'api-key': this.#API_KEY,
+          offset: this.getOffset(), // divisible by 20
+          // limit: 20,
+        })
     );
     if (!response.ok) {
       throw new Error(error);
@@ -103,8 +101,7 @@ class NewsAPI {
 
     if (num_results > 1000) {
       this.totalCount = 1000;
-    }
-    else {
+    } else {
       this.totalCount = num_results;
     }
 
@@ -114,7 +111,7 @@ class NewsAPI {
   async getCategories() {
     const response = await fetch(
       this.#BASE_URL +
-      `news/v3/content/section-list.json?api-key=${this.#API_KEY}`
+        `news/v3/content/section-list.json?api-key=${this.#API_KEY}`
     );
     if (!response.ok) {
       throw new Error(error);
@@ -144,7 +141,9 @@ class NewsAPI {
   }
 
   isTheLastPage() {
-    return Math.round(this.pageLimit * (this.currentPage - 1)) >= this.totalCount;
+    return (
+      Math.round(this.pageLimit * (this.currentPage - 1)) >= this.totalCount
+    );
   }
 
   lastPage() {
@@ -164,7 +163,7 @@ class NewsAPI {
     this.currentPage = 1;
     this.totalCount = 0;
   }
-    get isCategories() {
+  get isCategories() {
     return this.#isCategories;
   }
   set isCategories(isCategories) {

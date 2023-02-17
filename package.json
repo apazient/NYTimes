@@ -2,20 +2,20 @@
   "name": "parcel-project-template",
   "version": "2.0.0",
   "description": "",
-  "homepage": "https://grom-85.github.io/NewsAPi_project/",
+  "homepage": "https://apazient/NYTimes.git/",
   "scripts": {
     "start": "parcel src/*.html",
-    "build": "parcel build src/*.html --public-url /NewsAPi_project/"
+    "build": "parcel build src/*.html --public-url /NYTimes.git/"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/grom-85/NewsAPi_project.git"
+    "url": "git+https://github.com/apazient/NYTimes.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/grom-85/NewsAPi_project/issues"
+    "url": "https://github.com/apazient/NYTimes.git/issues"
   },
   "dependencies": {
     "air-datepicker": "^3.3.5",
