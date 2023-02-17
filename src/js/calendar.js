@@ -1,7 +1,7 @@
 import AirDatepicker from 'air-datepicker';
 import 'air-datepicker/air-datepicker.css';
 import format from 'date-fns/format';
-
+export let selectedDate;
 document.addEventListener('DOMContentLoaded', () => {
   const yearTitle = {
     tagName: 'span',
@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
       let newDate = new Date(currentDate);
       newDate.setFullYear(currentDate.getFullYear() - 1);
       dp.selectDate(newDate, {
-        silent: true
+        silent: true,
       });
       dp.setViewDate(newDate);
     },
@@ -39,7 +39,7 @@ document.addEventListener('DOMContentLoaded', () => {
       let newDate = new Date(currentDate);
       newDate.setFullYear(currentDate.getFullYear() + 1);
       dp.selectDate(newDate, {
-        silent: true
+        silent: true,
       });
       dp.setViewDate(newDate);
     },
@@ -53,7 +53,7 @@ document.addEventListener('DOMContentLoaded', () => {
       let newDate = new Date(currentDate);
       newDate.setMonth(currentDate.getMonth() - 1);
       dp.selectDate(newDate, {
-        silent: true
+        silent: true,
       });
       dp.setViewDate(newDate);
     },
@@ -67,7 +67,7 @@ document.addEventListener('DOMContentLoaded', () => {
       let newDate = new Date(currentDate);
       newDate.setMonth(currentDate.getMonth() + 1);
       dp.selectDate(newDate, {
-        silent: true
+        silent: true,
       });
       dp.setViewDate(newDate);
     },
