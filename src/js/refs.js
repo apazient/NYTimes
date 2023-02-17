@@ -18,6 +18,10 @@ export const refs = {
   categoriesIconDown: document.querySelector('.categories__icon-down'),
   categoriesBtnList: document.querySelector('.categories__btn-list'),
 
+  pg: document.getElementById('pagination'),
+  btnNextPg: document.querySelector('button.next-page'),
+  btnPrevPg: document.querySelector('button.prev-page'),
+
   categoriesBtnMenuText: document.querySelector('.categories__btn-text'),
   notFoundEl: document.querySelector('.not-found'),
   buttonEL: document.querySelector('.js-button-search'),
@@ -42,10 +46,9 @@ export const refs = {
   favBtnMob: document.querySelector('.js-favorite'),
   homeBtnMob: document.querySelector('.js-home'),
 
-  nav : document.querySelector(".list-navigation"),
-  navMobile : document.querySelector(".mobile-menu-list"),
-  categContainer : document.querySelector(".filter-container"),
-  loader : document.querySelector(".loader"),
+  nav: document.querySelector('.list-navigation'),
+  navMobile: document.querySelector('.mobile-menu-list'),
+  categContainer: document.querySelector('.filter-container'),
+  loader: document.querySelector('.loader'),
   mobileMenu: document.querySelector('.js-menu-container'),
-  
 };

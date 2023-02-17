@@ -7,43 +7,40 @@ import format from 'date-fns/format';
 import { ApiService } from './API/fetchAPI';
 import { refs } from './refs';
 
-const pg = document.getElementById('pagination');
-const btnNextPg = document.querySelector('button.next-page');
-const btnPrevPg = document.querySelector('button.prev-page');
-let pgLastPage; 
+let pgLastPage;
 
 let arrPopular;
 
-pgBtn();
-savePopular();
-btnPgOnResize();
-btnPgOnPageLoad();
-pg.addEventListener('click', renderPopular);
-pg.addEventListener('click', activBtnPg);
-btnNextPg.addEventListener('click', onNextPage);
-btnPrevPg.addEventListener('click', onPrevPage);
+//pgBtn();
+//savePopular();
+//btnPgOnResize();
+//btnPgOnPageLoad();
+// refs.pg.addEventListener('click', renderPopular);
+refs.pg.addEventListener('click', activBtnPg);
+refs.btnNextPg.addEventListener('click', onNextPage);
+refs.btnPrevPg.addEventListener('click', onPrevPage);
 
-function savePopular() {
-  ApiService.getPopularNews().then(results => {
-    localStorage.setItem('popular', JSON.stringify(results));
-  });
-}
+// function savePopular() {
+//   ApiService.getPopularNews().then(results => {
+//     localStorage.setItem('popular', JSON.stringify(results));
+//   });
+// }
 
 function pgBtn() {
   if (ApiService.currentPage === 1) {
-    btnPrevPg.disabled = true;
-    btnNextPg.disabled = false;
+    refs.btnPrevPg.disabled = true;
+    refs.btnNextPg.disabled = false;
     return;
   }
 
   if (ApiService.isTheLastPage()) {
-    btnPrevPg.disabled = false;
-    btnNextPg.disabled = true;
+    refs.btnPrevPg.disabled = false;
+    refs.btnNextPg.disabled = true;
     return;
   }
 
-  btnPrevPg.disabled = false;
-  btnNextPg.disabled = false;
+  refs.btnPrevPg.disabled = false;
+  refs.btnNextPg.disabled = false;
 }
 
 function activBtnPg(e) {
@@ -65,7 +62,6 @@ function pgOnPageLoad(arrPopular) {
   } else {
     arrPopular = arrPopular.slice(0, 9);
   }
-
   arrPopular = arrPopular.map(result => {
     const { uri, section, title, abstract, published_date, url, media } =
       result;
@@ -88,47 +84,44 @@ function pgOnPageLoad(arrPopular) {
     };
     return obj;
   });
-
   collectionByPopular = arrPopular.map(renderMarkup).join('');
 
   newsCard.renderGallery(collectionByPopular);
 }
 
-function renderPopular(e) {
-  e.preventDefault();
-  arrPopular = JSON.parse(localStorage.getItem('popular'));
-  let newCollectionOfPopular;
+// function renderPopular(e) {
+//   e.preventDefault();
+//   arrPopular = JSON.parse(localStorage.getItem('popular'));
+//   let newCollectionOfPopular;
 
-  pg.addEventListener('click', setCurPage);
-  if (ApiService.currentPage === 1) {
-    newCollectionOfPopular = arrPopular.slice(0, 8);
-  }
-  if (ApiService.currentPage === 2) {
-    newCollectionOfPopular = arrPopular.slice(8, 16);
-  }
-  if (ApiService.currentPage === 3) {
-    newCollectionOfPopular = arrPopular.slice(16);
-  }
-  clear(refs.gallery);
-  pgOnPageLoad(newCollectionOfPopular);
-  return;
-}
+//   refs.pg.addEventListener('click', setCurPage);
+//   if (ApiService.currentPage === 1) {
+//     newCollectionOfPopular = arrPopular.slice(0, 8);
+//   }
+//   if (ApiService.currentPage === 2) {
+//     newCollectionOfPopular = arrPopular.slice(8, 16);
+//   }
+//   if (ApiService.currentPage === 3) {
+//     newCollectionOfPopular = arrPopular.slice(16);
+//   }
+//   clear(refs.gallery);
+//   pgOnPageLoad(newCollectionOfPopular);
+//   return;
+// }
 
 function onNextPage(e) {
   e.preventDefault();
   if (ApiService.currentPage === 1) {
-  pgLastPage=ApiService.lastPage()
-}
-  if (ApiService.currentPage >= ApiService.lastPage()) { 
+    pgLastPage = ApiService.lastPage();
+  }
+  if (ApiService.currentPage >= ApiService.lastPage()) {
     pgBtn();
     return;
   }
-
   ApiService.currentPage += 1;
 
   pgBtn();
   btnPgOnPageLoad();
-
   if (!!ApiService.lastAction) {
     ApiService.lastAction.action(ApiService.lastAction.arg).then();
   }
@@ -164,46 +157,8 @@ function btnPgOnResize() {
 }
 
 function btnPgOnPageLoad() {
-  //  const markup = {
-  //   numOfPageFirst: ` <li class="pg-item" data-page="">
-  //       <a class="pg-link" href="#">1</a>
-  //   </li>`,
-  //   numOfPageLast: `<li class="pg-item" data-page="">
-  //       <a class="pg-link" href="#">${ApiService.lastPage()}</a>
-  //   </li>`,
-  //   numOfPageStart: `<li class="pg-item" data-page="">
-  //       <a class="pg-link" href="#">1</a>
-  //   </li><li class="pg-item" data-page="">
-  //       <a class="pg-link" href="#">2</a>
-  //   </li><li class="pg-item" data-page="">
-  //       <a class="pg-link" href="#">3</a>
-  //   </li>`,
-  //   numOfPageEnd: `<li class="pg-item" data-page="">
-  //       <a class="pg-link" href="#">${ApiService.lastPage() - 2}</a>
-  //   </li><li class="pg-item" data-page="">
-  //       <a class="pg-link" href="#">${ApiService.lastPage() - 1}</a>
-  //   </li><li class="pg-item" data-page="">
-  //       <a class="pg-link" href="#">${ApiService.lastPage()}</a>
-  //   </li>`,
-  //   numOfPageCenter: `<li class="pg-item" data-page="">
-  //       <a class="pg-link active" href="#">${ApiService.currentPage}</a>
-  //   </li><li class="pg-item" data-page="">
-  //       <a class="pg-link" href="#">${ApiService.currentPage + 1}</a>
-  //   </li><li class="pg-item" data-page="">
-  //       <a class="pg-link" href="#">${ApiService.currentPage + 2}</a>
-  //   </li>`,
-  //   numOfPageCenterMobile: `<li class="pg-item" data-page="">
-  //         <a class="pg-link active" href="#">${ApiService.currentPage}</a>
-  //     </li>`,
-  //   dot: `<li class="pg-item"><a class="pg-link-dots">...</a></li>`,
-  // };
+  //малює активність кнопки next prew
   pgBtn();
-  // if ((ApiService.lastPage() <= 3)) {
-  //   clearPgContainer();
-  // btnNextPg.disabled = true;
-  //   pg.insertAdjacentHTML('afterbegin', markup.numOfPageStart);
-  //   return;
-  // }
   if (window.matchMedia('(min-width: 767.98px)').matches) {
     clearPgContainer();
     renderPgBtn();
@@ -211,13 +166,16 @@ function btnPgOnPageLoad() {
     clearPgContainer();
     renderPgBtnMobile();
   }
+
+  driveMainButtons('unset');
 }
 
 function setCurPage(e) {
   e.preventDefault();
+  console.log('setbtn', e.target);
   if (ApiService.currentPage === 1) {
-   pgLastPage = ApiService.lastPage();
- }
+    pgLastPage = ApiService.lastPage();
+  }
   if (e.target.textContent === '...') {
     return;
   }
@@ -267,10 +225,10 @@ function renderPgBtnMobile() {
 
   if (!ApiService.isCategories) {
     ApiService.isCategories = true;
-     btnNextPg.disabled = true;
-     pg.insertAdjacentHTML('afterbegin', markup.numOfPageStart);
-     return;
-   }
+    refs.btnNextPg.disabled = true;
+    refs.pg.insertAdjacentHTML('afterbegin', markup.numOfPageStart);
+    return;
+  }
 
   if (
     ApiService.currentPage === 1 ||
@@ -278,8 +236,8 @@ function renderPgBtnMobile() {
     ApiService.currentPage === 3
   ) {
     clearPgContainer();
-    pg.insertAdjacentHTML('afterbegin', markup.numOfPageStart);
-    pg.insertAdjacentHTML('beforeend', markup.dot);
+    refs.pg.insertAdjacentHTML('afterbegin', markup.numOfPageStart);
+    refs.pg.insertAdjacentHTML('beforeend', markup.dot);
     return;
   }
 
@@ -290,23 +248,24 @@ function renderPgBtnMobile() {
   ) {
     clearPgContainer();
 
-    pg.insertAdjacentHTML('afterbegin', markup.dot);
-    pg.insertAdjacentHTML('beforeend', markup.numOfPageEnd);
+    refs.pg.insertAdjacentHTML('afterbegin', markup.dot);
+    refs.pg.insertAdjacentHTML('beforeend', markup.numOfPageEnd);
     return;
   }
 
   clearPgContainer();
-  pg.insertAdjacentHTML('afterbegin', markup.dot);
-  pg.insertAdjacentHTML('beforeend', markup.numOfPageCenterMobile);
-  pg.insertAdjacentHTML('beforeend', markup.dot);
-  pg.insertAdjacentHTML('afterbegin', markup.numOfPageFirst);
-  pg.insertAdjacentHTML('beforeend', markup.numOfPageLast);
+  refs.pg.insertAdjacentHTML('afterbegin', markup.dot);
+  refs.pg.insertAdjacentHTML('beforeend', markup.numOfPageCenterMobile);
+  refs.pg.insertAdjacentHTML('beforeend', markup.dot);
+  refs.pg.insertAdjacentHTML('afterbegin', markup.numOfPageFirst);
+  refs.pg.insertAdjacentHTML('beforeend', markup.numOfPageLast);
 }
 
 function renderPgBtn() {
-  console.log("current",ApiService.currentPage)
-  
-  console.log(pgLastPage)
+  console.log('current', ApiService.currentPage);
+  console.log();
+
+  console.log(pgLastPage);
   const markup = {
     numOfPageFirst: ` <li class="pg-item" data-page="">
         <a class="pg-link" href="#">1</a>
@@ -340,16 +299,15 @@ function renderPgBtn() {
       </li>`,
     dot: `<li class="pg-item"><a class="pg-link-dots">...</a></li>`,
   };
-  pg.addEventListener('click', setCurPage);
-
+  refs.pg.addEventListener('click', setCurPage);
 
   console.log('ApiService.lastPage()', ApiService.lastPage());
-  console.log("isCategories",ApiService.isCategories)
+  console.log('isCategories', ApiService.isCategories);
   if (!ApiService.isCategories) {
     ApiService.isCategories = true;
-    clearPgContainer();
-    btnNextPg.disabled = true;
-    pg.insertAdjacentHTML('afterbegin', markup.numOfPageStart);
+    // clearPgContainer();
+    refs.btnNextPg.disabled = true;
+    refs.pg.insertAdjacentHTML('afterbegin', markup.numOfPageStart);
     return;
   }
 
@@ -358,9 +316,9 @@ function renderPgBtn() {
     ApiService.currentPage === 2 ||
     ApiService.currentPage === 3
   ) {
-    clearPgContainer();
-    pg.insertAdjacentHTML('afterbegin', markup.numOfPageStart);
-    pg.insertAdjacentHTML('beforeend', markup.dot);
+    // clearPgContainer();
+    refs.pg.insertAdjacentHTML('afterbegin', markup.numOfPageStart);
+    refs.pg.insertAdjacentHTML('beforeend', markup.dot);
   } else if (
     ApiService.currentPage === ApiService.lastPage() ||
     ApiService.currentPage === ApiService.lastPage() - 1 ||
@@ -368,24 +326,34 @@ function renderPgBtn() {
   ) {
     clearPgContainer();
 
-    pg.insertAdjacentHTML('afterbegin', markup.dot);
-    pg.insertAdjacentHTML('beforeend', markup.numOfPageEnd);
+    refs.pg.insertAdjacentHTML('afterbegin', markup.dot);
+    refs.pg.insertAdjacentHTML('beforeend', markup.numOfPageEnd);
   } else {
     clearPgContainer();
 
-    pg.insertAdjacentHTML('afterbegin', markup.dot);
-    pg.insertAdjacentHTML('beforeend', markup.numOfPageCenter);
-    pg.insertAdjacentHTML('beforeend', markup.dot);
-    pg.insertAdjacentHTML('afterbegin', markup.numOfPageFirst);
-    pg.insertAdjacentHTML('beforeend', markup.numOfPageLast);
+    refs.pg.insertAdjacentHTML('afterbegin', markup.dot);
+    refs.pg.insertAdjacentHTML('beforeend', markup.numOfPageCenter);
+    refs.pg.insertAdjacentHTML('beforeend', markup.dot);
+    refs.pg.insertAdjacentHTML('afterbegin', markup.numOfPageFirst);
+    refs.pg.insertAdjacentHTML('beforeend', markup.numOfPageLast);
   }
 }
 
-function clearPgContainer() {
-  pg.innerHTML = '';
+function driveMainButtons(display) {
+  const cont = document.getElementById('pagination-container');
+  const buttons = cont.getElementsByTagName('button');
+  for (let element of buttons) {
+    element.style.display = display;
+  }
+}
+
+export function clearPgContainer() {
+  refs.pg.innerHTML = '';
+  driveMainButtons('none');
 }
 
 export function rerenderPaginator() {
-  pgBtn();
+  // pgBtn();
+
   btnPgOnPageLoad();
 }

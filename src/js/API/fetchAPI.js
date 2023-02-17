@@ -4,19 +4,19 @@ class NewsAPI {
   #BASE_URL = 'https://api.nytimes.com/svc/';
   #API_KEY = 'Y0rMFldQHIhCKPc5jiggZphSD4GPFMzb';
   #period;
-  #query;
+
   #beginDate;
   #end_date;
   #isCategories;
 
   #params = {
     'api-key': this.#API_KEY,
-    q: this.#query,
   };
 
   pageLimit = 20;
   totalCount = 0;
   currentPage = 1;
+  query;
 
   constructor() {
     this.#period = 7;
@@ -40,26 +40,26 @@ class NewsAPI {
   }
 
   async getNewsByQuery() {
-    let newDate = null;
+    let newDate = format(Date.now(), 'yyyyMMdd');
     //перевіряє чи календар вибраний
-    let params = { ...this.#params, ...{ page: this.currentPage - 1 } };
-    console.log('params', params);
+    let params;
     if (!selectedDate) {
-      console.log('selected date', selectedDate);
-      newDate = format(Date.now(), 'yyyyMMdd');
+      params = {
+        ...this.#params,
+        ...{ page: this.currentPage - 1, q: this.query },
+      };
     } else {
       newDate = selectedDate;
       params = {
-        q: this.#query,
-        begin_date: this.#beginDate,
-        end_date: this.#end_date,
+        ...this.#params,
+        ...{
+          page: this.currentPage - 1,
+          q: this.query,
+          begin_date: newDate,
+          end_date: newDate,
+        },
       };
     }
-    Object.assign(this.#params, {
-      q: this.#query,
-      begin_date: newDate,
-      end_date: newDate,
-    });
     const response = await fetch(
       `${this.#BASE_URL}search/v2/articlesearch.json?` +
         new URLSearchParams(params)
@@ -118,13 +118,6 @@ class NewsAPI {
     }
     const { results } = await response.json();
     return results;
-  }
-
-  get query() {
-    return this.#query;
-  }
-  set query(newQuery) {
-    this.#query = newQuery;
   }
 
   get date() {

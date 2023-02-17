@@ -7,3 +7,5 @@ export const MAXLENGHT = 110;
 export const READ = false;
 export const FAVORITE = false;
 export const HOME = false;
+export const BASE_IMG =
+  'https://media4.giphy.com/media/h52OM8Rr5fLiZRqUBD/giphy.gif';

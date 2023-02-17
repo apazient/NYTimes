@@ -6,12 +6,12 @@ import * as key from './const';
 import * as newsCard from './newsCard';
 import { rerenderPaginator } from './pagination';
 import * as weather from './weather';
+import * as common from './common';
 
 const newsFetch = ApiService;
 
 let imgUrl;
 const arrCategories = JSON.parse(localStorage.getItem('results'));
-
 
 saveCategories();
 categoriesOnResize();
@@ -113,13 +113,14 @@ function markupCategoriesInList(arrCategories, begin, end) {
 }
 
 function showCategoriesList() {
+  //
   refs.categoriesIconUp.classList.toggle('invisible');
   refs.categoriesIconDown.classList.toggle('invisible');
   refs.categoriesMenu.classList.toggle('invisible');
 }
 
 //*****filter categories Btn*****************/
-refs.categoriesBox.addEventListener(`click`, (arg) => {
+refs.categoriesBox.addEventListener(`click`, arg => {
   newsFetch.cleanPagination();
   rerenderPaginator();
   onCategoriesBtnClick(arg);
@@ -127,19 +128,20 @@ refs.categoriesBox.addEventListener(`click`, (arg) => {
 });
 
 async function onCategoriesBtnClick(e) {
+  refs.notFoundEl.classList.add('hidden');
   if (!!e?.target?.dataset?.value) {
     e.preventDefault();
     //newsFetch.resetPage();
     //повертає значення з імпуту
     newsFetch.category = e.target.dataset.value;
     // не здійснює пошук, якщо нічого не введено
-  }
-  else {
+  } else {
     newsFetch.category = e;
   }
   newsFetch.lastAction.arg = newsFetch.category;
 
   const docs = await newsFetch.getNewsByCategories();
+  common.toggleNotFound(docs);
   let collectionByCategorie = [];
   collectionByCategorie = docs.results.map(result => {
     const { abstract, published_date, uri, url, multimedia, section, title } =
@@ -147,9 +149,7 @@ async function onCategoriesBtnClick(e) {
 
     let imgUrl;
     if (multimedia) {
-      
       imgUrl = multimedia[2]['url'];
-      
     } else {
       imgUrl =
         'https://www.shutterstock.com/image-photo/canadian-national-flag-overlay-false-260nw-1720481365.jpg';
@@ -212,7 +212,7 @@ function renderGallery(markup) {
 }
 //*******renderedWether******************* */
 function weatherRender() {
-let replacedItem;
+  let replacedItem;
   if (window.matchMedia('(min-width: 1279.98px)').matches) {
     replacedItem = refs.gallery.childNodes[1];
     const markup = renderWeather();
